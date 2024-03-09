@@ -1,0 +1,59 @@
+body, div {
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+div.column {
+  display: flex;
+  flex-direction: column;
+}
+
+div#header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: solid;
+  border-bottom-width: 1px;
+}
+
+
+input, button {
+  margin: 1%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+button {
+  width: 100px;
+}
+
+table, td, th {
+  margin: 10px auto 10px auto;
+  padding: 4px;
+  border-style: solid;
+  border-width: thin;
+  border-collapse: collapse;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #ffffff;
+}
+
+td {
+  width: 40px;
+}
+
+tbody {
+  font-weight: normal;
+}
+
+thead {
+  font-weight: bold;
+}
+
+td:hover {
+  background: #afdfff;
+}
+
+label.error {
+  color: #ff7f00;
+}

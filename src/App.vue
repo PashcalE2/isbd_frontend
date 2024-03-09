@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="column">
+    <ShapkaComponent />
+    <router-view />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import * as Storage from "@/js/storage"
+import ShapkaComponent from "@/components/ShapkaComponent";
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
+    ShapkaComponent
+  },
+
+  mounted() {
+    if (this.getAuthenticated()) {
+      this.$router.replace({ name: "Main" });
+    } else {
+      console.log("Ага, не авторизовался!");
+
+      this.$router.replace({ name: "Login" });
+    }
+  },
+
+  methods: {
+    getAuthenticated() {
+      return Storage.getAuthenticated();
+    }
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style src="./styles/styles.css">
 </style>
