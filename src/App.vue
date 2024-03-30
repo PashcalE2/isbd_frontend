@@ -1,37 +1,45 @@
 <template>
-  <div class="column">
-    <ShapkaComponent />
-    <router-view />
-  </div>
+    <div class="column">
+        <router-view />
+    </div>
 </template>
 
 <script>
 
-import * as Storage from "@/js/storage"
-import ShapkaComponent from "@/components/ShapkaComponent";
+import * as Storage from "@/js/client_storage"
 
 export default {
-  name: 'App',
+    name: 'App',
 
-  components: {
-    ShapkaComponent
-  },
+    mounted() {
+        this.goToMainIfHasAccess();
+        this.goToLoginIfNoAccess();
+    },
 
-  mounted() {
-    if (this.getAuthenticated()) {
-      this.$router.replace({ name: "Main" });
-    } else {
-      console.log("Ага, не авторизовался!");
+    beforeRouteEnter(to, from, next) {
+        console.log(to, from, next);
+    },
 
-      this.$router.replace({ name: "Login" });
+    methods: {
+        getAuthenticated() {
+            return Storage.getAuthenticated();
+        },
+
+        goToMainIfHasAccess() {
+            if (this.getAuthenticated()) {
+                let page = this;
+                page.$router.replace({ name: "ClientMain" });
+            }
+        },
+
+        goToLoginIfNoAccess() {
+            if (!this.getAuthenticated()) {
+                let page = this;
+                console.log("Ага, не авторизовался!");
+                page.$router.replace({ name: "ClientLogin" });
+            }
+        }
     }
-  },
-
-  methods: {
-    getAuthenticated() {
-      return Storage.getAuthenticated();
-    }
-  }
 }
 </script>
 

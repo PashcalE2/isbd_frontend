@@ -1,5 +1,5 @@
 
-const SERVER_URL = "http://localhost:22600/lab4-final"
+const SERVER_URL = "http://localhost:22600/isbd_backend"
 
 export const MY_APIS = {
     POINTS_URL: SERVER_URL + "/points",
@@ -8,8 +8,9 @@ export const MY_APIS = {
       return SERVER_URL + "/points/" + r;
     },
 
-    TEST_URL: SERVER_URL + "/test",
-    REGISTER_URL: SERVER_URL + "/register",
-    LOGIN_URL: SERVER_URL + "/login",
-    LOGOUT_URL: SERVER_URL + "/logout"
+    CLIENT: {
+        REGISTER_URL: SERVER_URL + "/client_register",
+        LOGIN_URL: SERVER_URL + "/client_login",
+        LOGOUT_URL: SERVER_URL + "/client_logout"
+    }
 }
