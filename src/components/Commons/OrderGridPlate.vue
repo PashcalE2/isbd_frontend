@@ -1,11 +1,19 @@
 <template>
     <div class="grid_plate">
-        <img src="../../assets/logo.png" alt="Placeholder"/>
-        <div class="price">
-            {{ product_price + " ₽"}}
-        </div>
         <div class="name">
-            {{ product_name }}
+            {{ "Заказ №" + order_id }}
+        </div>
+        <div class="description">
+            Состояние: <span class="status_progress">{{ order_status }}</span>
+        </div>
+        <div class="description">
+            {{ "Дата принятия: " + order_formed_date }}
+        </div>
+        <div class="description">
+            {{ "Дата завершения: " + order_done_date }}
+        </div>
+        <div class="description">
+            Сумма: <span class="price">{{ order_sum + " ₽"}}</span>
         </div>
     </div>
 </template>
@@ -14,17 +22,21 @@
 export default {
     name: "ProductGridPlate",
 
-    props: ["product_name", "product_price"]
+    props: ["order_id", "order_status", "order_formed_date", "order_done_date", "order_sum"]
 }
 </script>
 
 <style scoped>
 
+div.description {
+    font-weight: bold;
+}
+
 div.grid_plate, .selected_grid_plate {
     display: flex;
     flex-direction: column;
-    width: 200px;
-    height: 320px;
+    width: 300px;
+    height: 200px;
     margin: 10px auto 0 auto;
     background-color: #f0f0f0;
 
@@ -51,20 +63,19 @@ div.grid_plate:hover, div.selected_grid_plate:hover {
     border-color: #007fff;
 }
 
-div.price {
+span.price {
     font-size: 22px;
     font-weight: bold;
     color: #ff007f;
 }
 
 div.name {
-    font-size: 16px;
+    font-size: 26px;
     font-weight: bold;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 2;
-    overflow: hidden;
+}
+
+span.status_progress {
+    color: #ff7f00;
 }
 
 </style>

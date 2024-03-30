@@ -6,6 +6,7 @@ import ClientProductsPage from "@/components/Client/ClientProductsPage.vue";
 import ClientOrdersPage from "@/components/Client/ClientOrdersPage.vue";
 import ClientProfilePage from "@/components/Client/ClientProfilePage.vue";
 import ClientCurrentOrderPage from "@/components/Client/ClientCurrentOrderPage.vue";
+import ClientChatPage from "@/components/Client/ClientChatPage.vue";
 
 const routes = [
     {
@@ -48,6 +49,12 @@ const routes = [
                 path: "/current_order",
                 name: "ClientCurrentOrder",
                 component: ClientCurrentOrderPage,
+            },
+
+            {
+                path: "/chat",
+                name: "ClientChat",
+                component: ClientChatPage,
             },
 
             {

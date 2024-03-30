@@ -6,7 +6,7 @@
             </div>
 
             <div class="order_header">
-                Формируется
+                <span class="status_progress">Формируется</span>
             </div>
 
             <div class="order_header">
@@ -14,58 +14,15 @@
             </div>
         </div>
 
-        <div class="product">
-            <div class="column">
-                <div class="row">
-                    <img src="@/assets/logo.png" alt="Placeholder"/>
-                    <div class="column">
-                        <div class="row">
-                            <div class="header">
-                                Название Название Название Название Название Название Название
-                            </div>
-                            <div class="column">
-                                <DefaultButton
-                                    ref="remove_button"
-                                    caption="X"
-                                />
-                            </div>
-                        </div>
-                        <div class="price">
-                            123456789
-                        </div>
-
-                        <div style="width: fit-content">
-                            <CountField
-                                label_text="Количество"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="header">
-                        Описание
-                    </div>
-                </div>
-                <div class="description">
-                    Описание описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                    описание описание описание описание описание описание описание описание
-                </div>
-            </div>
-
-        </div>
+        <ClientProductInOrder
+            product_name="Бумага для черчения"
+            product_price="123456"
+            product_description="Отличная бумага"
+        />
 
         <div class="order_header">
-            Итого к оплате: <span>123456789</span>
+            Итого к оплате: <span class="sum">123456789</span>
         </div>
-
-
 
         <div class="row" style="justify-content: space-between; padding: 8px">
             <div class="column" style="width: 200px">
@@ -97,11 +54,11 @@
 
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
-import CountField from "@/components/Commons/CountField.vue";
+import ClientProductInOrder from "@/components/Client/ClientProductInOrder.vue";
 
 export default {
     name: "ClientCurrentOrderPage",
-    components: {CountField, DefaultButton},
+    components: {ClientProductInOrder, DefaultButton},
 
     mounted() {
 
@@ -115,7 +72,9 @@ export default {
         },
 
         chatOnClick() {
-            this.$refs.chat_button.disable();
+            let page = this;
+            page.$refs.chat_button.disable();
+            page.$router.replace({ name: "ClientChat"});
         },
 
         cancelOnClick() {
@@ -127,14 +86,6 @@ export default {
 
 <style scoped>
 
-div.product {
-    margin: 8px auto 8px auto;
-    padding: 8px;
-    border: #e0e0e0 2px solid;
-    border-radius: 8px;
-    width: 1000px;
-}
-
 div.order_header {
     padding: 8px;
     text-align: left;
@@ -142,32 +93,17 @@ div.order_header {
     font-weight: bold;
 }
 
-div.header {
-    padding: 8px;
-    font-size: 26px;
-    font-weight: bold;
-    text-align: left;
-}
-
-div.price {
-    padding: 8px;
+span.status_progress {
     font-size: 32px;
     font-weight: bold;
-    text-align: left;
-    color: #ff007f;
+    color: #ff7f00;
 }
 
-span {
+span.sum {
     padding: 8px;
     font-size: 32px;
     font-weight: bold;
     color: #ff007f;
-}
-
-div.description {
-    padding: 8px;
-    font-size: 20px;
-    text-align: left;
 }
 
 </style>
