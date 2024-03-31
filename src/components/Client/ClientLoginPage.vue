@@ -65,6 +65,8 @@ import ListInputField from "@/components/Commons/ListInputField.vue";
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import PasswordInputField from "@/components/Commons/PasswordInputField.vue";
 import ClientWelcomeHeader from "@/components/Client/ClientWelcomeHeader.vue";
+import axios from "axios";
+import {MY_APIS} from "@/js/my_apis";
 
 export default {
     name: "ClientLoginPage",
@@ -111,6 +113,16 @@ export default {
 
     mounted() {
         // get options
+
+        console.log("Получаем опции для формы");
+
+        axios.get(MY_APIS.CLIENT.GET_OPTIONS_URL)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (exception) {
+                console.log(exception);
+            })
 
         this.$refs.register_button.enable();
     },
@@ -188,7 +200,6 @@ export default {
             Storage.setAuthenticated(true);
             page.$router.push({ name: "ClientMain"});
 
-            /*
             axios.post(MY_APIS.CLIENT.LOGIN_URL, {
                 login: this.input.login,
                 password: this.input.password
@@ -196,17 +207,16 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    Storage.setClient(0, page.input.login, "", "", page.input.password);
-                    Storage.setAuthenticated(true);
+                    //Storage.setClient(0, page.input.login, "", "", page.input.password);
+                    //Storage.setAuthenticated(true);
 
-                    page.$router.push({ name: "ClientMain"});
+                    //page.$router.push({ name: "ClientMain"});
                 })
                 .catch(function (exception) {
                     console.log(exception);
 
                     page.error_msg = exception.response.data;
                 })
-            */
         },
 
         register() {
