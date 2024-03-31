@@ -27,7 +27,7 @@
 
 <script>
 export default {
-    name: "EmailInputField",
+    name: "PhoneInputField",
 
     data() {
         return {

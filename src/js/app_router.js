@@ -6,7 +6,9 @@ import ClientProductsPage from "@/components/Client/ClientProductsPage.vue";
 import ClientOrdersPage from "@/components/Client/ClientOrdersPage.vue";
 import ClientProfilePage from "@/components/Client/ClientProfilePage.vue";
 import ClientCurrentOrderPage from "@/components/Client/ClientCurrentOrderPage.vue";
-import ClientChatPage from "@/components/Client/ClientChatPage.vue";
+import ClientChatPage from "@/components/Client/ClientCurrentChatPage.vue";
+import ClientChatHistoryPage from "@/components/Client/ClientChatHistoryPage.vue";
+import ClientOrderHistoryPage from "@/components/Client/ClientOrderHistoryPage.vue";
 
 const routes = [
     {
@@ -52,9 +54,21 @@ const routes = [
             },
 
             {
+                path: "/order_history",
+                name: "ClientOrderHistory",
+                component: ClientOrderHistoryPage,
+            },
+
+            {
                 path: "/chat",
                 name: "ClientChat",
                 component: ClientChatPage,
+            },
+
+            {
+                path: "/chat_history",
+                name: "ClientChatHistory",
+                component: ClientChatHistoryPage,
             },
 
             {

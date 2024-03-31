@@ -14,10 +14,10 @@
             </div>
         </div>
 
-        <ClientProductInOrder
-            product_name="Бумага для черчения"
-            product_price="123456"
-            product_description="Отличная бумага"
+        <ClientProductInOrderHistory
+                product_name="Бумага для черчения"
+                product_price="123456"
+                product_description="Отличная бумага"
         />
 
         <div class="order_header">
@@ -27,17 +27,17 @@
         <div class="row" style="justify-content: space-between; padding: 8px">
             <div class="column" style="width: 200px">
                 <DefaultButton
-                    ref="pay_button"
-                    caption="Оплатить"
-                    v-bind:on_click="payOnClick"
+                        ref="chat_button"
+                        caption="Перейти в чат"
+                        v-bind:on_click="chatOnClick"
                 />
             </div>
 
             <div class="column" style="width: 200px">
                 <DefaultButton
-                    ref="chat_button"
-                    caption="Перейти в чат"
-                    v-bind:on_click="chatOnClick"
+                        ref="cancel_button"
+                        caption="Отменить"
+                        v-bind:on_click="cancelOnClick"
                 />
             </div>
         </div>
@@ -46,25 +46,23 @@
 
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
-import ClientProductInOrder from "@/components/Client/ClientProductInOrder.vue";
+import ClientProductInOrderHistory from "@/components/Client/ClientProductInOrderHistory.vue";
 
 export default {
-    name: "ClientCurrentOrderPage",
-    components: {ClientProductInOrder, DefaultButton},
+    name: "ClientOrderHistoryPage",
+    components: {ClientProductInOrderHistory, DefaultButton},
 
     mounted() {
+
+        this.$refs.cancel_button.enable();
         this.$refs.chat_button.enable();
     },
 
     methods: {
-        payOnClick() {
-            this.$refs.cancel_button.disable();
-        },
-
         chatOnClick() {
             let page = this;
             page.$refs.chat_button.disable();
-            page.$router.replace({ name: "ClientChat"});
+            page.$router.replace({ name: "ClientChatHistory"});
         },
 
         cancelOnClick() {

@@ -1,7 +1,7 @@
 <template>
     <ClientWelcomeHeader/>
 
-    <div class="centered_column" id="login_page">
+    <div class="centered_column">
         <div style="height: 100px"/>
 
         <div class="column" style="width: fit-content">
@@ -22,7 +22,7 @@
                     v-bind:error_message="active_error_messages.login"
                 />
 
-                <StringInputField
+                <EmailInputField
                     ref="email"
 
                     input_id="email_input"
@@ -88,16 +88,17 @@
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import ListInputField from "@/components/Commons/ListInputField.vue";
-import StringInputField from "@/components/Commons/StringInputField.vue";
 import PasswordInputField from "@/components/Commons/PasswordInputField.vue";
 import PhoneInputField from "@/components/Commons/PhoneInputField.vue";
 import ClientWelcomeHeader from "@/components/Client/ClientWelcomeHeader.vue";
+import EmailInputField from "@/components/Commons/EmailInputField.vue";
 
 export default {
     name: "ClientRegisterPage",
     components: {
+        EmailInputField,
         ClientWelcomeHeader,
-        PhoneInputField, PasswordInputField, StringInputField, ListInputField, DefaultButton},
+        PhoneInputField, PasswordInputField, ListInputField, DefaultButton},
 
     data() {
         return {

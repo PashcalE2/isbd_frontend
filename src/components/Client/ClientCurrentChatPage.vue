@@ -52,7 +52,7 @@ import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import ChatMessage from "@/components/Commons/ChatMessage.vue";
 
 export default {
-    name: "ClientChatPage",
+    name: "ClientCurrentChatPage",
     components: {ChatMessage, DefaultButton},
 
     data() {
@@ -125,7 +125,12 @@ div#text_window {
     justify-content: space-between;
     padding: 8px;
 
+    outline-color: #007fff;
     border-top: #007fff 4px solid;
+}
+
+div.input_disabled {
+    background-color: #404040;
 }
 
 div#chat_send_button {

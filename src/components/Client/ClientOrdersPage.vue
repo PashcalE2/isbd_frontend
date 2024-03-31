@@ -7,6 +7,7 @@
                     order_formed_date="00.00.0000 00:00"
                     order_done_date="00.00.0000 00:00"
                     order_sum="123456789"
+                    v-on:click="goToOrderHistory(0)"
             />
 
             <OrderGridPlate
@@ -49,7 +50,15 @@ import OrderGridPlate from "@/components/Commons/OrderGridPlate.vue";
 
 export default {
     name: "ClientOrdersPage",
-    components: {OrderGridPlate}
+    components: {OrderGridPlate},
+
+    methods: {
+        goToOrderHistory(id) {
+            console.log(id);
+
+            this.$router.replace({ name: "ClientOrderHistory" });
+        }
+    }
 }
 </script>
 
