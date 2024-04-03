@@ -3,13 +3,13 @@
         <div class="row" style="justify-content: space-between; border-bottom: #e0e0e0 4px solid">
             <div class="column">
                 <div class="admin_name">
-                    {{ admin_name }}
+                    {{ admin.name }}
                 </div>
                 <div class="admin_contacts">
-                    {{ admin_phone_number }}
+                    {{ admin.phone_number }}
                 </div>
                 <div class="admin_contacts">
-                    {{ admin_email }}
+                    {{ admin.email }}
                 </div>
             </div>
             <div class="column" style="width: 200px; padding: 8px">
@@ -23,17 +23,16 @@
 
         <div style="max-height: 500px; overflow-y: scroll;">
             <ChatMessage
-                    v-for="i in [1,2,3,4,5,6,7,8,9,10]"
+                    v-for="(message, i) in chat_history"
                     v-bind:key="i"
-                    content="This 15 a digital copy of a book that was preserved for generations on library shelves before it was carefully scanned by Google as part of a project
-to make the world's books discoverable online. "
-                    posted="00.00.0000 00:00"
-                    from_current_user=""
+                    v-bind:content="message.content"
+                    v-bind:posted="reformatDateTime(message.posted)"
+                    v-bind:from_current_user="message.from_user"
             />
         </div>
 
         <div class="row" id="text_window">
-            <textarea v-bind:inert="true" ref="chat_input" id="chat_input" placeholder="Введите сообщение"/>
+            <textarea ref="chat_input" id="chat_input" placeholder="Введите сообщение"/>
 
             <div id="chat_send_button">
                 <DefaultButton
@@ -50,6 +49,10 @@ to make the world's books discoverable online. "
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import ChatMessage from "@/components/Commons/ChatMessage.vue";
+import axios from "axios";
+import {MY_APIS} from "@/js/my_apis";
+import * as ClientStorage from "@/js/client_storage";
+import {reformatDateTime} from "@/js/utils";
 
 export default {
     name: "ClientChatHistoryPage",
@@ -57,30 +60,117 @@ export default {
 
     data() {
         return {
-            admin_name: "Шипулин Павел Андреевич",
-            admin_phone_number: "+7 (777) 777-77-77",
-            admin_email: "example@example.ru",
-            chat_history: [
-                {
-                    from_user: false,
-                    content: "Sampletext",
-                    posted: "00.00.0000 00:00"
-                }
-            ]
+            admin: {
+                name: "",
+                phone_number: "",
+                email: ""
+            },
+
+            order_id: 0,
+            chat_history: []
         }
     },
 
     mounted() {
-        // get chat and admin
+        if (this.$route.query === undefined) {
+            this.$router.replace({ name: "ClientMain"});
+            return;
+        }
+
+        this.order_id = this.$route.query.order_id;
 
         this.$refs.back_button.enable();
+        this.$refs.send_message.enable();
+
+        this.getAdmin();
+        this.getMessages();
     },
 
     methods: {
+        reformatDateTime,
+
         backOnClick() {
             this.$refs.back_button.disable();
-            this.$router.replace({ name: "ClientOrderHistory"});
+            this.$router.replace({ name: "ClientOrderHistory", query: { order_id: this.order_id } });
         },
+
+        chatSendOnClick() {
+            let page = this;
+
+            axios.request({
+                url: MY_APIS.CLIENT.CHAT.POST_MESSAGE.url,
+                method: MY_APIS.CLIENT.CHAT.POST_MESSAGE.method,
+                params: {
+                    client_id: ClientStorage.getId(),
+                    password: ClientStorage.getPassword(),
+                    order_id: page.order_id,
+                    content: page.$refs.chat_input.value
+                }
+            })
+                .then(function (response) {
+                    response;
+                    page.$refs.chat_input.value = "";
+                    page.getMessages();
+                })
+                .catch(function (exception) {
+                    console.log(exception);
+                    // page.$router.replace({ name: "ClientMain"});
+                })
+        },
+
+        getAdmin() {
+            let page = this;
+
+            axios.request({
+                url: MY_APIS.CLIENT.CHAT.GET_ADMIN.url,
+                method: MY_APIS.CLIENT.CHAT.GET_ADMIN.method,
+                params: {
+                    client_id: ClientStorage.getId(),
+                    password: ClientStorage.getPassword(),
+                    order_id: page.order_id
+                }
+            })
+                .then(function (response) {
+                    page.admin = {
+                        name: response.data.fullName,
+                        phone_number: response.data.phoneNumber,
+                        email: response.data.email
+                    };
+                })
+                .catch(function (exception) {
+                    console.log(exception);
+                    // page.$router.replace({ name: "ClientMain"});
+                })
+        },
+
+        getMessages() {
+            let page = this;
+
+            axios.request({
+                url: MY_APIS.CLIENT.CHAT.GET_MESSAGES.url,
+                method: MY_APIS.CLIENT.CHAT.GET_MESSAGES.method,
+                params: {
+                    client_id: ClientStorage.getId(),
+                    password: ClientStorage.getPassword(),
+                    order_id: page.order_id
+                }
+            })
+                .then(function (response) {
+                    page.chat_history = [];
+
+                    for (let message of response.data) {
+                        page.chat_history.push({
+                            from_user: message.sender === "клиент",
+                            content: message.content,
+                            posted: message.sentAt
+                        });
+                    }
+                })
+                .catch(function (exception) {
+                    console.log(exception);
+                    // page.$router.replace({ name: "ClientMain"});
+                })
+        }
     }
 }
 </script>

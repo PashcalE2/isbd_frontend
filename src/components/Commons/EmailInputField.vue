@@ -3,7 +3,6 @@
         <div style="text-align: left; padding: 4px">
             <label
                 v-bind:for="input_id"
-                v-bind:class="not_valid ? 'error' : ''"
                 v-text="label_text"
             />
         </div>
@@ -15,12 +14,12 @@
 
                 v-bind:id="input_id"
                 v-bind:placeholder="placeholder"
-                v-on:input="on_input(this.$refs.input_field);"
+                v-on:input="validateValue(); on_input();"
             />
         </div>
 
         <div class="error">
-            <span class="error">{{ error_message }}</span>
+            <span class="error">{{ active_error_message }}</span>
         </div>
     </div>
 </template>
@@ -31,8 +30,11 @@ export default {
 
     data() {
         return {
-            not_valid: false,
-            email_re: /^(?:\w+\.)*\w+@\w+\.\w+$/
+            is_valid: false,
+            email: "",
+            email_re: /^(?:\w+\.)*\w+@\w+\.\w+$/,
+
+            active_error_message: ""
         }
     },
 
@@ -45,6 +47,33 @@ export default {
     methods: {
         getInputElement() {
             return this.$refs.input_field
+        },
+
+        isValid() {
+            return this.is_valid;
+        },
+
+        validateValue() {
+            let val = this.$refs.input_field.value;
+            let re = this.email_re.exec(val);
+            if (re == null) {
+                this.active_error_message = this.error_message;
+                this.is_valid = false;
+            }
+            else {
+                this.email = val;
+                this.active_error_message = "";
+                this.is_valid = true;
+            }
+        },
+
+        getEmail() {
+            return this.email;
+        },
+
+        setEmail(val) {
+            this.$refs.input_field.value = val;
+            this.validateValue();
         }
     }
 }

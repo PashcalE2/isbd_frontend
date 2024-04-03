@@ -18,7 +18,7 @@ export default {
     props: ["content", "posted", "from_current_user"],
 
     mounted() {
-        if (this.from_current_user.length > 0) {
+        if (this.from_current_user) {
             this.makeFromUser();
         }
         else {

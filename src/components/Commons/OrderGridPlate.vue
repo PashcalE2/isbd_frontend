@@ -1,10 +1,14 @@
 <template>
-    <div class="grid_plate">
+    <div class="grid_plate"
+        v-on:click="on_click(order_id)"
+    >
         <div class="name">
             {{ "Заказ №" + order_id }}
         </div>
         <div class="description">
-            Состояние: <span class="status_progress">{{ order_status }}</span>
+            Состояние: <OrderStatus
+                v-bind:status="order_status"
+            />
         </div>
         <div class="description">
             {{ "Дата принятия: " + order_formed_date }}
@@ -19,10 +23,13 @@
 </template>
 
 <script>
+import OrderStatus from "@/components/Commons/OrderStatus.vue";
+
 export default {
     name: "ProductGridPlate",
+    components: {OrderStatus},
 
-    props: ["order_id", "order_status", "order_formed_date", "order_done_date", "order_sum"]
+    props: ["order_id", "order_status", "order_formed_date", "order_done_date", "order_sum", "on_click"]
 }
 </script>
 

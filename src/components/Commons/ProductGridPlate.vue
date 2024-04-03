@@ -1,5 +1,5 @@
 <template>
-    <div class="grid_plate">
+    <div ref="product" class="grid_plate">
         <img src="../../assets/logo.png" alt="Placeholder"/>
         <div class="price">
             {{ product_price + " ₽"}}
@@ -14,7 +14,48 @@
 export default {
     name: "ProductGridPlate",
 
-    props: ["product_name", "product_price"]
+    data() {
+        return {
+            is_in_order: false,
+            is_hidden: false
+        }
+    },
+
+    props: ["product_id", "product_name", "product_price"],
+
+    methods: {
+        isInOrder() {
+            return this.is_in_order;
+        },
+
+        select() {
+            this.$refs.product.className = "selected_grid_plate";
+            this.is_in_order = true;
+        },
+
+        unselect() {
+            this.$refs.product.className = "grid_plate"
+            this.is_in_order = false;
+        },
+
+        getProductId() {
+            return this.product_id;
+        },
+
+        getProductName() {
+            return this.product_name;
+        },
+
+        hide() {
+            this.$refs.product.style.display = "none"
+            this.is_hidden = true;
+        },
+
+        show() {
+            this.$refs.product.style.display = "flex"
+            this.is_hidden = false;
+        }
+    }
 }
 </script>
 
@@ -34,15 +75,10 @@ div.grid_plate, .selected_grid_plate {
 }
 
 div.selected_grid_plate {
-    border-color: #00ff7f;
+    border-color: #ff007f;
 }
 
-div.selected_grid_plate > div {
-    text-align: left;
-    padding: 8px;
-}
-
-div.grid_plate > div {
+div.selected_grid_plate > div, div.grid_plate > div {
     text-align: left;
     padding: 8px;
 }

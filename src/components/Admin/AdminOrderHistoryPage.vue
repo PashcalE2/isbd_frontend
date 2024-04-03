@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <ClientProductInOrderHistory
+        <AdminProductInOrderHistory
             v-for="(product, i) in products_in_order"
             v-bind:key="i"
             v-bind:product_id="product.id"
@@ -53,17 +53,9 @@
 
             <div class="column" style="width: 200px">
                 <DefaultButton
-                    ref="pay_button"
-                    caption="Оплатить"
-                    v-bind:on_click="payOnClick"
-                />
-            </div>
-
-            <div class="column" style="width: 200px">
-                <DefaultButton
-                        ref="cancel_button"
-                        caption="Отменить"
-                        v-bind:on_click="cancelOnClick"
+                    ref="assembly_button"
+                    caption="Запросить сборку"
+                    v-bind:on_click="assemblyOnClick"
                 />
             </div>
         </div>
@@ -72,16 +64,16 @@
 
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
-import ClientProductInOrderHistory from "@/components/Client/ClientProductInOrderHistory.vue";
 import axios from "axios";
 import {MY_APIS} from "@/js/my_apis";
-import * as ClientStorage from "@/js/client_storage";
+import * as AdminStorage from "@/js/admin_storage";
 import {reformatDate} from "@/js/utils";
 import OrderStatus from "@/components/Commons/OrderStatus.vue";
+import AdminProductInOrderHistory from "@/components/Admin/AdminProductInOrderHistory.vue";
 
 export default {
-    name: "ClientOrderHistoryPage",
-    components: {OrderStatus, ClientProductInOrderHistory, DefaultButton},
+    name: "AdminOrderHistoryPage",
+    components: {AdminProductInOrderHistory, OrderStatus, DefaultButton},
 
     data() {
         return {
@@ -93,7 +85,7 @@ export default {
 
     mounted() {
         if (this.$route.query === undefined) {
-            this.$router.replace({ name: "ClientMain"});
+            this.$router.replace({ name: "AdminMain"});
             return;
         }
 
@@ -102,7 +94,6 @@ export default {
         this.$refs.chat_button.enable();
         this.$refs.back_button.enable();
         this.getOrderInfo();
-        this.getProductsInOrder();
     },
 
     methods: {
@@ -111,61 +102,37 @@ export default {
         backOnClick() {
             let page = this;
             page.$refs.back_button.disable();
-            page.$router.replace({ name: "ClientOrders" });
+            page.$router.replace({ name: "AdminOrders" });
         },
 
         chatOnClick() {
             let page = this;
             page.$refs.chat_button.disable();
-            page.$router.replace({ name: "ClientChatHistory", query: { order_id: page.order_id } });
+            page.$router.replace({ name: "AdminChatHistory", query: { order_id: page.order_id } });
         },
 
-        payOnClick() {
+        assemblyOnClick() {
             let page = this;
-            this.$refs.pay_button.disable();
+            page.$refs.assembly_button.disable();
+            console.log(MY_APIS.ADMIN.ORDER.ASK_FOR_ASSEMBLING.url);
 
             axios.request({
-                url: MY_APIS.CLIENT.ORDER.PAY.url,
-                method: MY_APIS.CLIENT.ORDER.PAY.method,
+                url: MY_APIS.ADMIN.ORDER.ASK_FOR_ASSEMBLING.url,
+                method: MY_APIS.ADMIN.ORDER.ASK_FOR_ASSEMBLING.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
-                    order_id: page.order_info.id
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
+                    order_id: page.order_id
                 }
             })
                 .then(function (response) {
                     response;
-                    alert("Заказ оплачен");
+                    page.order_info = {};
                     page.getOrderInfo();
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    alert("Не удалось оплатить заказ");
-                    page.$refs.cancel_button.enable();
-                })
-        },
-
-        cancelOnClick() {
-            this.$refs.cancel_button.disable();
-
-            let page = this;
-
-            axios.request({
-                url: MY_APIS.CLIENT.ORDER.CANCEL.url,
-                method: MY_APIS.CLIENT.ORDER.CANCEL.method,
-                params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
-                    order_id: page.order_id
-                }
-            })
-                .then(function () {
-                    alert("Заказ успешно отменен");
-                })
-                .catch(function (exception) {
-                    alert("Не удалось отменить заказ");
-                    console.log(exception);
-                    this.$refs.cancel_button.enable();
+                    page.$router.replace({ name: "AdminMain"});
                 })
         },
 
@@ -173,32 +140,27 @@ export default {
             let page = this;
 
             axios.request({
-                url: MY_APIS.CLIENT.ORDER.GET.url,
-                method: MY_APIS.CLIENT.ORDER.GET.method,
+                url: MY_APIS.ADMIN.ORDER.GET.url,
+                method: MY_APIS.ADMIN.ORDER.GET.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
                     order_id: page.order_id
                 }
             })
                 .then(function (response) {
                     page.order_info = response.data;
 
-                    if (page.order_info.status === "формируется") {
-                        page.$router.replace({ name: "ClientMain" });
+                    if (page.order_info.status !== "отклонен" && page.order_info.status !== "выполнен" && page.order_info.status !== "ожидает оплаты") {
+                        page.$refs.assembly_button.enable();
                     }
-                    else if (page.order_info.status === "ожидает оплаты") {
-                        page.$refs.pay_button.enable();
-                    }
-                    else {
-                        if (page.order_info.status !== "отклонен" && page.order_info.status !== "выполнен") {
-                            page.$refs.cancel_button.enable();
-                        }
-                    }
+
+                    page.products_in_order = [];
+                    page.getProductsInOrder();
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    page.$router.replace({ name: "ClientMain"});
+                    page.$router.replace({ name: "AdminMain"});
                 })
         },
 
@@ -206,11 +168,11 @@ export default {
             let page = this;
 
             axios.request({
-                url: MY_APIS.CLIENT.ORDER.GET_PRODUCTS.url,
-                method: MY_APIS.CLIENT.ORDER.GET_PRODUCTS.method,
+                url: MY_APIS.ADMIN.ORDER.GET_PRODUCTS.url,
+                method: MY_APIS.ADMIN.ORDER.GET_PRODUCTS.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
                     order_id: page.order_id
                 }
             })
@@ -219,7 +181,7 @@ export default {
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    page.$router.replace({ name: "ClientMain"});
+                    page.$router.replace({ name: "AdminMain"});
                 })
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <ClientWelcomeHeader/>
+    <FactoryWelcomeHeader/>
 
     <div class="centered_column">
         <div style="height: 100px"/>
@@ -8,17 +8,14 @@
             <h1>Вход в систему</h1>
 
             <div class="column" style="margin: 0 auto">
-                <ListInputField
-                    ref="organization"
+                <StringInputField
+                    ref="factory_id_input"
 
-                    input_id="organization_input"
+                    input_id="factory_id_input"
                     input_style_width="400px"
-                    datalist_id="organization_datalist"
-                    label_text="Организация"
-                    placeholder="Начните вводить название организации"
-
+                    label_text="Идентификатор"
+                    placeholder="Введите свой идентификатор"
                     v-bind:on_input="onLoginInput"
-                    v-bind:datalist_options="organizations_options"
                     v-bind:error_message="active_error_messages.login"
                 />
 
@@ -39,14 +36,6 @@
                         caption="Войти"
                         v-bind:on_click="login"
                     />
-
-                    <span style="margin: 4px auto 4px auto">или</span>
-
-                    <DefaultButton
-                        ref="register_button"
-                        caption="Зарегистрироваться"
-                        v-bind:on_click="register"
-                    />
                 </div>
             </div>
 
@@ -60,17 +49,17 @@
 
 <script>
 
-import ListInputField from "@/components/Commons/ListInputField.vue";
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import PasswordInputField from "@/components/Commons/PasswordInputField.vue";
-import ClientWelcomeHeader from "@/components/Client/ClientWelcomeHeader.vue";
 import axios from "axios";
 import {MY_APIS} from "@/js/my_apis";
-import * as ClientStorage from "@/js/client_storage";
+import * as FactoryStorage from "@/js/factory_storage";
+import StringInputField from "@/components/Commons/StringInputField.vue";
+import FactoryWelcomeHeader from "@/components/Factory/FactoryWelcomeHeader.vue";
 
 export default {
-    name: "ClientLoginPage",
-    components: {ClientWelcomeHeader, PasswordInputField, DefaultButton, ListInputField},
+    name: "FactoryLoginPage",
+    components: {FactoryWelcomeHeader, StringInputField, PasswordInputField, DefaultButton},
     data() {
         return {
             input: {
@@ -94,8 +83,9 @@ export default {
 
             error_messages: {
                 login: {
-                    NoSuchOrganization: "Такой организации нет",
-                    EmptyField: "Введите название организации"
+                    NoSuchId: "Проверьте идентификатор",
+                    EmptyField: "Введите свой идентификатор консультанта",
+                    WrongSymbols: "Только цифры"
                 },
 
                 password: {
@@ -104,27 +94,9 @@ export default {
                 }
             },
 
-            login_re: /^[а-яА-Яa-zA-Z0-9 \-'".,&]+$/,
+            login_re: /^[1-9]\d*$/,
             password_re: /^[a-zA-Z0-9]+$/
         }
-    },
-
-    mounted() {
-        let page = this;
-
-        axios.request({
-            url: MY_APIS.CLIENT.PROFILE.GET_REGISTERED_ORGANIZATIONS.url,
-            method: MY_APIS.CLIENT.PROFILE.GET_REGISTERED_ORGANIZATIONS.method
-        })
-            .then(function (response) {
-                // console.log(response.data);
-                page.organizations_options = response.data;
-            })
-            .catch(function (exception) {
-                console.log(exception);
-            })
-
-        this.$refs.register_button.enable();
     },
 
     methods: {
@@ -145,18 +117,13 @@ export default {
                 this.form_errors.login = true;
                 this.active_error_messages.login = this.error_messages.login.EmptyField;
             }
+            else if (this.isWrongString(element.value, this.login_re)) {
+                this.form_errors.login = true;
+                this.active_error_messages.login = this.error_messages.login.WrongSymbols;
+            }
             else {
                 this.form_errors.login = false;
-            }
-
-            if (!this.form_errors.login) {
-                if (!is_empty && !(this.organizations_options.includes(element.value))) {
-                    this.form_errors.login = true;
-                    this.active_error_messages.login = this.error_messages.login.NoSuchOrganization;
-                } else {
-                    this.form_errors.login = false;
-                    this.active_error_messages.login = "";
-                }
+                this.active_error_messages.login = "";
             }
 
             if (this.canLogin()) {
@@ -197,41 +164,34 @@ export default {
             this.$refs.login_button.disable();
 
             axios.request({
-                url: MY_APIS.CLIENT.PROFILE.LOGIN.url,
-                method: MY_APIS.CLIENT.PROFILE.LOGIN.method,
+                url: MY_APIS.FACTORY.PROFILE.LOGIN.url,
+                method: MY_APIS.FACTORY.PROFILE.LOGIN.method,
                 data: {
-                    name: page.input.login,
+                    id: page.input.login,
                     password: page.input.password
                 }
             })
                 .then(function (response) {
                     //console.log(response);
 
-                    ClientStorage.setClient(
+                    FactoryStorage.setFactory(
                         response.data.id,
-                        page.input.login,
-                        response.data.email,
-                        response.data.phoneNumber,
                         response.data.password
                     );
 
-                    page.$router.push({ name: "ClientMain"});
+                    page.$router.push({ name: "FactoryMain"});
                 })
                 .catch(function (exception) {
-                    //console.log(exception);
+                    console.log(exception);
 
                     if (exception.response.status === 409) {
+                        page.form_errors.login = true;
+                        page.active_error_messages.login = page.error_messages.login.NoSuchId;
+
                         page.form_errors.password = true;
                         page.active_error_messages.password = page.error_messages.password.WrongPassword;
                     }
                 })
-        },
-
-        register() {
-            let page = this;
-
-            this.$refs.register_button.disable();
-            page.$router.push({ name: "ClientRegister"});
         }
     }
 }

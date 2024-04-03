@@ -15,7 +15,7 @@
             <div class="column" style="width: 200px; padding: 8px">
                 <DefaultButton
                         ref="back_button"
-                        caption="Вернуться в корзину"
+                        caption="Вернуться к заказу"
                         v-bind:on_click="backOnClick"
                 />
             </div>
@@ -23,11 +23,11 @@
 
         <div style="max-height: 500px; overflow-y: scroll;">
             <ChatMessage
-                v-for="(message, i) in chat_history"
-                v-bind:key="i"
-                v-bind:content="message.content"
-                v-bind:posted="reformatDateTime(message.posted)"
-                v-bind:from_current_user="message.from_user"
+                    v-for="(message, i) in chat_history"
+                    v-bind:key="i"
+                    v-bind:content="message.content"
+                    v-bind:posted="reformatDateTime(message.posted)"
+                    v-bind:from_current_user="message.from_user"
             />
         </div>
 
@@ -49,13 +49,13 @@
 <script>
 import DefaultButton from "@/components/Commons/DefaultButton.vue";
 import ChatMessage from "@/components/Commons/ChatMessage.vue";
-import {reformatDateTime} from "@/js/utils";
 import axios from "axios";
 import {MY_APIS} from "@/js/my_apis";
-import * as ClientStorage from "@/js/client_storage";
+import * as AdminStorage from "@/js/admin_storage";
+import {reformatDateTime} from "@/js/utils";
 
 export default {
-    name: "ClientCurrentChatPage",
+    name: "AdminChatHistoryPage",
     components: {ChatMessage, DefaultButton},
 
     data() {
@@ -73,7 +73,7 @@ export default {
 
     mounted() {
         if (this.$route.query === undefined) {
-            this.$router.replace({ name: "ClientMain"});
+            this.$router.replace({ name: "AdminMain"});
             return;
         }
 
@@ -91,18 +91,18 @@ export default {
 
         backOnClick() {
             this.$refs.back_button.disable();
-            this.$router.replace({ name: "ClientCurrentOrder"});
+            this.$router.replace({ name: "AdminOrderHistory", query: { order_id: this.order_id } });
         },
 
         chatSendOnClick() {
             let page = this;
 
             axios.request({
-                url: MY_APIS.CLIENT.CHAT.POST_MESSAGE.url,
-                method: MY_APIS.CLIENT.CHAT.POST_MESSAGE.method,
+                url: MY_APIS.ADMIN.CHAT.POST_MESSAGE.url,
+                method: MY_APIS.ADMIN.CHAT.POST_MESSAGE.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
                     order_id: page.order_id,
                     content: page.$refs.chat_input.value
                 }
@@ -114,7 +114,7 @@ export default {
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    // page.$router.replace({ name: "ClientMain"});
+                    // page.$router.replace({ name: "AdminMain"});
                 })
         },
 
@@ -122,11 +122,11 @@ export default {
             let page = this;
 
             axios.request({
-                url: MY_APIS.CLIENT.CHAT.GET_ADMIN.url,
-                method: MY_APIS.CLIENT.CHAT.GET_ADMIN.method,
+                url: MY_APIS.ADMIN.CHAT.GET_CLIENT.url,
+                method: MY_APIS.ADMIN.CHAT.GET_CLIENT.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
                     order_id: page.order_id
                 }
             })
@@ -139,7 +139,7 @@ export default {
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    // page.$router.replace({ name: "ClientMain"});
+                    // page.$router.replace({ name: "AdminMain"});
                 })
         },
 
@@ -147,11 +147,11 @@ export default {
             let page = this;
 
             axios.request({
-                url: MY_APIS.CLIENT.CHAT.GET_MESSAGES.url,
-                method: MY_APIS.CLIENT.CHAT.GET_MESSAGES.method,
+                url: MY_APIS.ADMIN.CHAT.GET_MESSAGES.url,
+                method: MY_APIS.ADMIN.CHAT.GET_MESSAGES.method,
                 params: {
-                    client_id: ClientStorage.getId(),
-                    password: ClientStorage.getPassword(),
+                    admin_id: AdminStorage.getId(),
+                    password: AdminStorage.getPassword(),
                     order_id: page.order_id
                 }
             })
@@ -160,7 +160,7 @@ export default {
 
                     for (let message of response.data) {
                         page.chat_history.push({
-                            from_user: message.sender === "клиент",
+                            from_user: message.sender === "консультант",
                             content: message.content,
                             posted: message.sentAt
                         });
@@ -168,7 +168,7 @@ export default {
                 })
                 .catch(function (exception) {
                     console.log(exception);
-                    // page.$router.replace({ name: "ClientMain"});
+                    // page.$router.replace({ name: "AdminMain"});
                 })
         }
     }
@@ -211,10 +211,6 @@ div#text_window {
 
     outline-color: #007fff;
     border-top: #007fff 4px solid;
-}
-
-div.input_disabled {
-    background-color: #404040;
 }
 
 div#chat_send_button {

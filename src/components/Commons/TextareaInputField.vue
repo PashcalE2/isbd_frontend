@@ -8,9 +8,8 @@
         </div>
 
         <div>
-            <input
+            <textarea
                 ref="input_field"
-                type="text"
 
                 v-bind:id="input_id"
                 v-bind:placeholder="placeholder"
@@ -26,7 +25,7 @@
 
 <script>
 export default {
-    name: "StringInputField",
+    name: "TextareaInputField",
 
     data() {
         return {
@@ -36,9 +35,12 @@ export default {
 
     mounted() {
         this.$refs.input_field.style.width = this.input_style_width;
+        this.$refs.input_field.style.maxWidth = this.input_style_max_width;
+        this.$refs.input_field.style.height = this.input_style_height;
+        this.$refs.input_field.style.maxHeight = this.input_style_max_height;
     },
 
-    props: ["input_id", "input_style_width", "on_input", "label_text", "placeholder", "error_message"],
+    props: ["input_id", "input_style_width", "input_style_height", "input_style_max_width", "input_style_max_height", "on_input", "label_text", "placeholder", "error_message"],
 
     methods: {
         getInputElement() {
@@ -53,4 +55,24 @@ export default {
 </script>
 
 <style scoped>
+
+textarea {
+    font-family: Arial, serif;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin: auto 0 auto 0;
+    border: #c0c0c0 2px solid;
+    border-radius: 5px;
+    outline: none;
+    padding: 8px;
+}
+
+textarea.error {
+    border-color: #ff0000;
+}
+
+textarea:focus {
+    border-color: #0060f0;
+}
+
 </style>

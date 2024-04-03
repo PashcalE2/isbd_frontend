@@ -9,24 +9,35 @@ import ClientCurrentOrderPage from "@/components/Client/ClientCurrentOrderPage.v
 import ClientChatPage from "@/components/Client/ClientCurrentChatPage.vue";
 import ClientChatHistoryPage from "@/components/Client/ClientChatHistoryPage.vue";
 import ClientOrderHistoryPage from "@/components/Client/ClientOrderHistoryPage.vue";
+import AdminLoginPage from "@/components/Admin/AdminLoginPage.vue";
+import AdminMainPage from "@/components/Admin/AdminMainPage.vue";
+import AdminOrdersPage from "@/components/Admin/AdminOrdersPage.vue";
+import AdminOrderHistoryPage from "@/components/Admin/AdminOrderHistoryPage.vue";
+import AdminChatHistoryPage from "@/components/Admin/AdminChatHistoryPage.vue";
+import FactoryLoginPage from "@/components/Factory/FactoryLoginPage.vue";
+import FactoryMainPage from "@/components/Factory/FactoryMainPage.vue";
+import FactoryProductsPage from "@/components/Factory/FactoryProductsPage.vue";
+import FactoryProductPage from "@/components/Factory/FactoryProductPage.vue";
+import FactoryMaterialsPage from "@/components/Factory/FactoryMaterialsPage.vue";
+import FactoryMaterialPage from "@/components/Factory/FactoryMaterialPage.vue";
 
 const routes = [
     {
         path: "/",
         name: "Welcome",
-        component: ClientLoginPage,
+        component: ClientLoginPage
     },
 
     {
         path: "/client_login",
         name: "ClientLogin",
-        component: ClientLoginPage,
+        component: ClientLoginPage
     },
 
     {
         path: "/client_register",
         name: "ClientRegister",
-        component: ClientRegisterPage,
+        component: ClientRegisterPage
     },
 
     {
@@ -38,43 +49,113 @@ const routes = [
             {
                 path: "/products",
                 name: "ClientProducts",
-                component: ClientProductsPage,
+                component: ClientProductsPage
             },
 
             {
                 path: "/orders",
                 name: "ClientOrders",
-                component: ClientOrdersPage,
+                component: ClientOrdersPage
             },
 
             {
                 path: "/current_order",
                 name: "ClientCurrentOrder",
-                component: ClientCurrentOrderPage,
+                component: ClientCurrentOrderPage
             },
 
             {
                 path: "/order_history",
                 name: "ClientOrderHistory",
-                component: ClientOrderHistoryPage,
+                component: ClientOrderHistoryPage
             },
 
             {
                 path: "/chat",
                 name: "ClientChat",
-                component: ClientChatPage,
+                component: ClientChatPage
             },
 
             {
                 path: "/chat_history",
                 name: "ClientChatHistory",
-                component: ClientChatHistoryPage,
+                component: ClientChatHistoryPage
             },
 
             {
                 path: "/profile",
                 name: "ClientProfile",
-                component: ClientProfilePage,
+                component: ClientProfilePage
+            }
+        ],
+    },
+
+    {
+        path: "/admin_login",
+        name: "AdminLogin",
+        component: AdminLoginPage
+    },
+
+    {
+        path: "/admin_app",
+        name: "AdminMain",
+        component: AdminMainPage,
+
+        children: [
+            {
+                path: "/orders",
+                name: "AdminOrders",
+                component: AdminOrdersPage
+            },
+
+            {
+                path: "/order_history",
+                name: "AdminOrderHistory",
+                component: AdminOrderHistoryPage
+            },
+
+            {
+                path: "/chat_history",
+                name: "AdminChatHistory",
+                component: AdminChatHistoryPage
+            }
+        ],
+    },
+
+    {
+        path: "/factory_login",
+        name: "FactoryLogin",
+        component: FactoryLoginPage
+    },
+
+    {
+        path: "/factory_app",
+        name: "FactoryMain",
+        component: FactoryMainPage,
+
+        children: [
+            {
+                path: "/products",
+                name: "FactoryProducts",
+                component: FactoryProductsPage
+            },
+
+            {
+                path: "/product",
+                name: "FactoryProduct",
+                component: FactoryProductPage
+            },
+
+            {
+                path: "/materials",
+                name: "FactoryMaterials",
+                component: FactoryMaterialsPage
+            },
+
+            {
+                path: "/material",
+                name: "FactoryMaterial",
+                component: FactoryMaterialPage
             }
         ],
     }

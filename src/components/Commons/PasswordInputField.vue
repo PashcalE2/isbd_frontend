@@ -3,7 +3,6 @@
         <div style="text-align: left; padding: 4px">
             <label
                 v-bind:for="input_id"
-                v-bind:class="not_valid ? 'error' : ''"
                 v-text="label_text"
             />
         </div>
@@ -31,7 +30,7 @@ export default {
 
     data() {
         return {
-            not_valid: false
+            is_valid: false
         }
     },
 
@@ -44,7 +43,7 @@ export default {
     methods: {
         getInputElement() {
             return this.$refs.input_field
-        }
+        },
     }
 }
 </script>
