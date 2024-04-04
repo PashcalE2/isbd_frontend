@@ -27,7 +27,7 @@
 
                     input_id="reg_email_input"
                     input_style_width="400px"
-                    label_text="Изменение адреса почты"
+                    label_text="Адрес электронной почты"
                     placeholder="example.example@example.com"
                     error_message="Неверный формат почты"
                     v-bind:on_input="checkForm"
@@ -38,7 +38,7 @@
 
                     input_id="reg_phone_number_input"
                     input_style_width="400px"
-                    label_text="Изменение номера телефона"
+                    label_text="Номер телефона"
                     placeholder="+7XXXXXXXXXX"
                     error_message="Неверный формат номера"
                     v-bind:on_input="checkForm"

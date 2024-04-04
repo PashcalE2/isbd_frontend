@@ -2,14 +2,14 @@
     <div class="column" style="width: 800px; margin: 0 auto 0 auto">
         <div class="row" style="justify-content: space-between; border-bottom: #e0e0e0 4px solid">
             <div class="column">
-                <div class="admin_name">
-                    {{ admin.name }}
+                <div class="client_name">
+                    {{ client.name }}
                 </div>
-                <div class="admin_contacts">
-                    {{ admin.phone_number }}
+                <div class="client_contacts">
+                    {{ (client.phone_number[0] !== "+" ? "+" : "") + client.phone_number }}
                 </div>
-                <div class="admin_contacts">
-                    {{ admin.email }}
+                <div class="client_contacts">
+                    {{ client.email }}
                 </div>
             </div>
             <div class="column" style="width: 200px; padding: 8px">
@@ -60,7 +60,7 @@ export default {
 
     data() {
         return {
-            admin: {
+            client: {
                 name: "",
                 phone_number: "",
                 email: ""
@@ -82,7 +82,7 @@ export default {
         this.$refs.back_button.enable();
         this.$refs.send_message.enable();
 
-        this.getAdmin();
+        this.getClient();
         this.getMessages();
     },
 
@@ -118,7 +118,7 @@ export default {
                 })
         },
 
-        getAdmin() {
+        getClient() {
             let page = this;
 
             axios.request({
@@ -131,8 +131,10 @@ export default {
                 }
             })
                 .then(function (response) {
-                    page.admin = {
-                        name: response.data.fullName,
+                    console.log(response);
+
+                    page.client = {
+                        name: response.data.organization,
                         phone_number: response.data.phoneNumber,
                         email: response.data.email
                     };
@@ -177,14 +179,14 @@ export default {
 
 <style scoped>
 
-div.admin_name {
+div.client_name {
     padding: 8px;
     text-align: left;
     font-size: 32px;
     font-weight: bold;
 }
 
-div.admin_contacts {
+div.client_contacts {
     padding: 8px;
     text-align: left;
     font-size: 26px;

@@ -6,7 +6,7 @@
                     {{ admin.name }}
                 </div>
                 <div class="admin_contacts">
-                    {{ admin.phone_number }}
+                    {{ (admin.phone_number[0] !== "+" ? "+" : "") + admin.phone_number }}
                 </div>
                 <div class="admin_contacts">
                     {{ admin.email }}

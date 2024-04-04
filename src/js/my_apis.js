@@ -169,7 +169,7 @@ export const MY_APIS = {
 
         CHAT: {
             GET_CLIENT: {
-                url: ADMIN_PATH + "/chat/get_admin",
+                url: ADMIN_PATH + "/chat/get_client",
                 method: "get"
             },
 
